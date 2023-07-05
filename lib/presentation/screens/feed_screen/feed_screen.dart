@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:one_dictionary/core/constants/strings.dart';
 import 'package:one_dictionary/logic/random_word/random_quote_cubit.dart';
+import 'package:one_dictionary/presentation/screens/common/widgets/loading_widgets.dart';
+import 'package:one_dictionary/presentation/screens/feed_screen/widgets/quote_button.dart';
 import 'package:share_plus/share_plus.dart';
+
+import 'widgets/quote_tile.dart';
 
 class FeedScreen extends StatelessWidget {
   const FeedScreen({Key? key}) : super(key: key);
@@ -18,46 +22,19 @@ class FeedScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ListTile(
-                        title: SelectableText(
-                          '  ${state.data!.content}',
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                        subtitle: SelectableText(
-                          '${state.data!.author}',
-                          style: Theme.of(context).textTheme.bodyText1,
-                          textAlign: TextAlign.right,
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              context.read<RandomQuoteCubit>().generate();
-                            },
-                            icon: Icon(Icons.replay,
-                                color: Theme.of(context).primaryColor),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              Share.share(
-                                  '${state.data!.content} \n - ${state.data!.author}');
-                            },
-                            icon: Icon(Icons.ios_share,
-                                color: Theme.of(context).primaryColor),
-                          )
-                        ],
-                      )
+                      QuoteTile(
+                          author: state.data?.author ?? '',
+                          content: state.data?.content ?? ''),
+                      QuoteButtons(
+                          author: state.data?.author ?? '',
+                          content: state.data?.content ?? ''),
                     ],
                   ),
                 )
-              : const Center(
-                  child: CircularProgressIndicator(
-                  color: Strings.appMidGrey,
-                ));
+              : LoadingWidget();
         },
       ),
     ));
   }
 }
+
